@@ -3,7 +3,7 @@ name: Make Passwall Run Package
 on:
   push:
     branches:
-      - master
+      - main
   workflow_dispatch:
 
 jobs:
