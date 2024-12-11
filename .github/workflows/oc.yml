@@ -21,18 +21,18 @@ jobs:
 
       - name: Download latest OpenClash IPK
         run: |
-          LATEST_TAG=$(curl -s https://api.github.com/repos/vernesong/OpenClash/releases/latest | jq -r '.tag_name')
-          DOWNLOAD_URL=$(curl -s https://api.github.com/repos/vernesong/OpenClash/releases/tags/$LATEST_TAG | \
-            jq -r '.assets[] | select(.name | endswith(".ipk")) | .browser_download_url')
-          wget -O openclash/$(basename "$DOWNLOAD_URL") "$DOWNLOAD_URL"
+          curl -LO $(curl -s https://api.github.com/repos/vernesong/OpenClash/releases/latest \
+            | grep -oP '"browser_download_url":\s*".*\.ipk"' \
+            | cut -d '"' -f 4)
+          mv *.ipk openclash/
 
       # Step 3: Download and prepare the latest Mihomo file
       - name: Download latest Mihomo GZ
         run: |
-          LATEST_GZ_URL=$(curl -s https://api.github.com/repos/MetaCubeX/mihomo/releases/latest \
-            | jq -r '.assets[] | select(.name | startswith("linux-amd64-v")) | .browser_download_url')
-          wget -O linux-amd64.tar.gz "$LATEST_GZ_URL"
-          tar -xzf linux-amd64.tar.gz
+          curl -LO $(curl -s https://api.github.com/repos/MetaCubeX/mihomo/releases/latest \
+            | grep -oP '"browser_download_url":\s*".*linux-amd64-v.*\.gz"' \
+            | cut -d '"' -f 4)
+          tar -xzf *.gz
           mv linux-amd64-v*/clash_meta openclash/
           chmod +x openclash/clash_meta
 
