@@ -1,0 +1,83 @@
+name: Build OpenClash Installer
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Clone makeself repository
+      - name: Clone makeself repository
+        run: git clone https://github.com/megastep/makeself.git
+
+      # Step 2: Create openclash directory and download the latest OpenClash IPK
+      - name: Create openclash directory
+        run: mkdir openclash
+
+      - name: Download latest OpenClash IPK
+        run: |
+          LATEST_IPK_URL=$(curl -s https://api.github.com/repos/vernesong/OpenClash/releases/latest \
+            | grep "browser_download_url" \
+            | grep "luci-app-openclash" \
+            | cut -d '"' -f 4)
+          wget -O openclash/$(basename "$LATEST_IPK_URL") "$LATEST_IPK_URL"
+
+      # Step 3: Download and prepare the latest Mihomo file
+      - name: Download latest Mihomo GZ
+        run: |
+          LATEST_GZ_URL=$(curl -s https://api.github.com/repos/MetaCubeX/mihomo/releases/latest \
+            | grep "browser_download_url" \
+            | grep "linux-amd64-v" \
+            | cut -d '"' -f 4)
+          wget -O linux-amd64.tar.gz "$LATEST_GZ_URL"
+          tar -xzf linux-amd64.tar.gz
+          mv linux-amd64-v*/clash_meta openclash/
+          chmod +x openclash/clash_meta
+
+      # Step 4: Create install.sh script
+      - name: Create install.sh script
+        run: |
+          cat << 'EOF' > openclash/install.sh
+          opkg update
+          if [ $? -ne 0 ]; then
+              echo "update failed。"
+              exit 1
+          fi
+          opkg install *.ipk || exit 1
+          mv clash_meta /etc/openclash/core/
+          sleep 10s
+          ifconfig br-lan > /dev/null 2>&1
+          if [ $? -ne 0 ]; then
+              echo "接口错误，重启网络。"
+              /etc/init.d/network restart
+              echo "重启完毕"
+              exit 0
+          fi
+          EOF
+          chmod +x openclash/install.sh
+
+      # Step 5: Move openclash to makeself directory
+      - name: Move openclash to makeself
+        run: mv openclash makeself/
+
+      # Step 6: Create self-extracting installer
+      - name: Create self-extracting installer
+        run: |
+          cd makeself
+          ./makeself.sh openclash/ openclash.run "by github action" ./install.sh
+
+      # Step 7: Upload openclash.run to Release
+      - name: Upload to Release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: makeself/openclash.run
+          asset_name: openclash.run
+          asset_content_type: application/x-sh
