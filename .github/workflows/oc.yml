@@ -22,10 +22,11 @@ jobs:
       - name: Download latest OpenClash IPK
         run: |
           LATEST_IPK_URL=$(curl -s https://api.github.com/repos/vernesong/OpenClash/releases/latest \
-            | grep "browser_download_url" \
-            | grep "luci-app-openclash" \
-            | cut -d '"' -f 4)
-          wget -O openclash/$(basename "$LATEST_IPK_URL") "$LATEST_IPK_URL"
+          | grep "browser_download_url" \
+          | grep "luci-app-openclash" \
+          | cut -d '"' -f 4)
+          IPK_NAME=$(basename "$LATEST_IPK_URL")
+          wget -O openclash/"$IPK_NAME" "$LATEST_IPK_URL"
 
       # Step 3: Download and prepare the latest Mihomo file
       - name: Download latest Mihomo GZ
