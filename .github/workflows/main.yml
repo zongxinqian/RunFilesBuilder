@@ -2,7 +2,7 @@ name: Make Passwall Run Package
 
 on:
   schedule:
-    - cron: '25 10 * * *'
+    - cron: '23 10 * * *'
   workflow_dispatch:
 
 jobs:
