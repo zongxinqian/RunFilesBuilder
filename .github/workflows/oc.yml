@@ -11,20 +11,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Clone makeself repository
-      - name: Clone makeself repository
-        run: git clone https://github.com/megastep/makeself.git
+      # Step 1: Clone OpenClash repository (replacing download step)
+      - name: Clone OpenClash repository
+        uses: actions/checkout@v4
+        with:
+          repository: vernesong/OpenClash
+          ref: package
 
-      # Step 2: Create openclash directory and download the latest OpenClash IPK
+      # Step 2: Create openclash directory
       - name: Create openclash directory
         run: mkdir openclash
 
-      - name: Download latest OpenClash IPK
-        run: |
-          curl -LO $(curl -s https://api.github.com/repos/vernesong/OpenClash/releases/latest \
-            | grep -oP '"browser_download_url":\s*".*\.ipk"' \
-            | cut -d '"' -f 4)
-          mv *.ipk openclash/
+      # Step 3: Copy latest IPK file from package/master
+      - name: Copy latest OpenClash IPK
+        run: cp OpenClash/package/master/*.ipk openclash/
 
       # Step 3: Download and prepare the latest Mihomo file
       - name: Download latest Mihomo GZ
