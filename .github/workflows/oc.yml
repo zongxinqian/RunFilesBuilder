@@ -18,13 +18,16 @@ jobs:
           repository: vernesong/OpenClash
           ref: package
 
-      # Step 2: Create openclash directory
-      - name: Create openclash directory
+      - name: list OpenClash directory
+        run: ls OpenClash
+        
+      # Step 2: Create little openclash directory
+      - name: Create little openclash directory
         run: mkdir openclash
 
-      # Step 3: Copy latest IPK file from package/master
+      # Step 3: Copy latest IPK file from master
       - name: Copy latest OpenClash IPK
-        run: cp OpenClash/package/master/*.ipk openclash/
+        run: cp OpenClash/master/*.ipk openclash/
 
       # Step 3: Download and prepare the latest Mihomo file
       - name: Download latest Mihomo GZ
