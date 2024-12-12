@@ -3,7 +3,7 @@ name: Build OpenClash Installer
 on:
   push:
     branches:
-      - main
+      - master
   workflow_dispatch:
 
 jobs:
@@ -17,6 +17,9 @@ jobs:
         with:
           repository: vernesong/OpenClash
           ref: package
+      - name: Verify Clone Integrity
+        run: |
+          git rev-parse HEAD && echo "Clone successful!"
 
       - name: list OpenClash directory
         run: tree OpenClash
