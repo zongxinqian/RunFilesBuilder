@@ -24,6 +24,14 @@ jobs:
       - name: Copy latest openclash IPK to openclash directory
         run: cp OpenClash/master/*.ipk openclash/
 
+      - name: Get version info
+        id: extract_version
+        run: |
+          first_line=$(head -n 1 OpenClash/master/version)
+          echo "::set-output name=version::$first_line"
+          second_line=$(sed -n '2p' OpenClash/master/version)
+          echo "::set-output name=svg::$second_line"
+
       - name: Create Meta directory for git
         run: mkdir Meta
       
@@ -80,15 +88,15 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: MakeOpenClash
+          tag_name: ${{ steps.extract_version.outputs.version }}
           target_commitish: ${{ github.ref_name }}
           prerelease: false
-          body: test release
+          body: ${{ steps.extract_version.outputs.svg }}
 
       - name: Upload run files as release assets
         uses: softprops/action-gh-release@v2.1.0
         with:
-          tag_name: MakeOpenClash
+          tag_name: ${{ steps.extract_version.outputs.version }}
           files: makeself/*.run
           token: ${{ secrets.GITHUB_TOKEN }}
         env:
