@@ -75,12 +75,13 @@ jobs:
       - name: Clone makeself repository
         run: | 
           git clone https://github.com/megastep/makeself.git
-          mv openclash makeself/
-          cd makeself
 
       # Step 6: Create self-extracting installer
       - name: Create self-extracting installer
         run: |
+          mv openclash makeself/
+          cd makeself
+          ls
           ./makeself.sh openclash/ openclash-amd64.run "by github action" ./install.sh
 
       # Step 7: Upload openclash.run to Release
