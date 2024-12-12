@@ -45,10 +45,9 @@ jobs:
 
       - name: Copy latest meta core
         run: |
-          cp Meta/master/meta/clash-linux-amd64.tar.gz openclash/clash_meta.tar.gz
-          tar -xzvf openclash/clash_meta.tar.gz -C openclash/temp
-          mv openclash/temp/* openclash/clash_meta
-          rm -rf openclash/temp
+          tar -xzvf Meta/master/meta/clash-linux-amd64.tar.gz -C openclash/
+          ls openclash
+          mv openclash/clash openclash/clash_meta
           ls openclash
 
       # Step 4: Create install.sh script
