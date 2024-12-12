@@ -20,7 +20,7 @@ jobs:
           path: OpenClash
           ref: package
 
-      - name: list OpenClash directory
+      - name: list OpenClash ipk
         run: ls OpenClash/master
         
       # Step 2: Create little openclash directory
@@ -31,15 +31,25 @@ jobs:
       - name: Copy latest OpenClash IPK
         run: cp OpenClash/master/*.ipk openclash/
 
-      # Step 3: Download and prepare the latest Mihomo file
-      - name: Download latest Mihomo GZ
+      - name: Create Meta directory for git
+        run: mkdir Meta
+      - name: Checkout core
+        uses: actions/checkout@v4
+        with:
+          repository: vernesong/OpenClash
+          path: Meta
+          ref: core
+      
+      - name: list Meta/master/meta on core branch
+        run: ls Meta/master/meta
+
+      - name: Copy latest meta core
         run: |
-          curl -LO $(curl -s https://api.github.com/repos/MetaCubeX/mihomo/releases/latest \
-            | grep -oP '"browser_download_url":\s*".*linux-amd64-v.*\.gz"' \
-            | cut -d '"' -f 4)
-          tar -xzf *.gz
-          mv linux-amd64-v*/clash_meta openclash/
-          chmod +x openclash/clash_meta
+          cp Meta/master/meta/clash-linux-amd64.tar.gz openclash/clash_meta.tar.gz
+          tar -xzvf openclash/clash_meta.tar.gz -C openclash/temp
+          mv openclash/temp/* openclash/clash_meta
+          rm -rf openclash/temp
+          ls openclash
 
       # Step 4: Create install.sh script
       - name: Create install.sh script
@@ -71,15 +81,24 @@ jobs:
       - name: Create self-extracting installer
         run: |
           cd makeself
-          ./makeself.sh openclash/ openclash.run "by github action" ./install.sh
+          ./makeself.sh openclash/ openclash-amd64.run "by github action" ./install.sh
 
       # Step 7: Upload openclash.run to Release
-      - name: Upload to Release
-        uses: actions/upload-release-asset@v1
+      - name: Generate new tag & release
+        uses: softprops/action-gh-release@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: makeself/openclash.run
-          asset_name: openclash.run
-          asset_content_type: application/x-sh
+          tag_name: MakeOpenClash
+          target_commitish: ${{ github.ref_name }}
+          prerelease: false
+          body: test release
+
+      - name: Upload run files as release assets
+        uses: softprops/action-gh-release@v2.1.0
+        with:
+          tag_name: MakeOpenClash
+          files: makeself/*.run
+          token: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
