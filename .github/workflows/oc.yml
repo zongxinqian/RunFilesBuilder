@@ -11,18 +11,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Clone OpenClash repository (replacing download step)
-      - name: Clone OpenClash repository
+      - name: Create OpenClash directory
+        run: mkdir OpenClash
+      - name: Checkout OpenClash to created directory
         uses: actions/checkout@v4
         with:
           repository: vernesong/OpenClash
+          path: OpenClash
           ref: package
-      - name: Verify Clone Integrity
-        run: |
-          git rev-parse HEAD && echo "Clone successful!"
 
       - name: list OpenClash directory
-        run: ls -la
+        run: ls OpenClash/master
         
       # Step 2: Create little openclash directory
       - name: Create little openclash directory
