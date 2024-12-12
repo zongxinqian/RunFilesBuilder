@@ -11,46 +11,39 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-      - name: Create OpenClash directory
-        run: mkdir OpenClash
-      - name: Checkout OpenClash to created directory
+      - name: Create OpenClash & openclash directory for git & ipk
+        run: mkdir OpenClash openclash
+        
+      - name: Checkout package branch to OpenClash directory
         uses: actions/checkout@v4
         with:
           repository: vernesong/OpenClash
           path: OpenClash
           ref: package
-
-      - name: list OpenClash ipk
-        run: ls OpenClash/master
-        
-      # Step 2: Create little openclash directory
-      - name: Create little openclash directory
-        run: mkdir openclash
-
-      # Step 3: Copy latest IPK file from master
-      - name: Copy latest OpenClash IPK
+          
+      - name: Copy latest openclash IPK to openclash directory
         run: cp OpenClash/master/*.ipk openclash/
 
       - name: Create Meta directory for git
         run: mkdir Meta
-      - name: Checkout core
+      
+      - name: Checkout core branch to Meta directory
         uses: actions/checkout@v4
         with:
           repository: vernesong/OpenClash
           path: Meta
           ref: core
       
-      - name: list Meta/master/meta on core branch
+      - name: list all cores on core branch
         run: ls Meta/master/meta
 
-      - name: Copy latest meta core
+      - name: Copy latest meta core to openclash directory
         run: |
           tar -xzvf Meta/master/meta/clash-linux-amd64.tar.gz -C openclash/
           mv openclash/clash openclash/clash_meta
           ls openclash
 
-      # Step 4: Create install.sh script
-      - name: Create install.sh script
+      - name: Create install.sh script save to openclash directory
         run: |
           cat << 'EOF' > openclash/install.sh
           opkg update
@@ -71,20 +64,17 @@ jobs:
           EOF
           chmod +x openclash/install.sh
 
-      # git clone makeself for self-extracting installer
-      - name: Clone makeself repository
+      - name: Clone makeself repository for self-extracting installer
         run: | 
           git clone https://github.com/megastep/makeself.git
 
-      # Step 6: Create self-extracting installer
-      - name: Create self-extracting installer
+      
+      - name: move openclash directory to makeself & create run
         run: |
           mv openclash makeself/
           cd makeself
-          ls
           ./makeself.sh openclash/ openclash-amd64.run "by github action" ./install.sh
 
-      # Step 7: Upload openclash.run to Release
       - name: Generate new tag & release
         uses: softprops/action-gh-release@master
         env:
