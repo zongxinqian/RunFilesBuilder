@@ -22,7 +22,7 @@ jobs:
           git rev-parse HEAD && echo "Clone successful!"
 
       - name: list OpenClash directory
-        run: tree OpenClash
+        run: ls -la
         
       # Step 2: Create little openclash directory
       - name: Create little openclash directory
