@@ -19,7 +19,7 @@ jobs:
           ref: package
 
       - name: list OpenClash directory
-        run: ls OpenClash
+        run: tree OpenClash
         
       # Step 2: Create little openclash directory
       - name: Create little openclash directory
