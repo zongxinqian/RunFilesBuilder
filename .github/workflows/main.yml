@@ -1,4 +1,4 @@
-name: Make Run Package
+name: Make passwall run files
 
 on:
   schedule:
