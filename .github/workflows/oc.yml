@@ -1,4 +1,4 @@
-name: Build OpenClash Installer
+name: Make OpenClash run files 
 
 on:
   push:
@@ -12,7 +12,7 @@ jobs:
 
     steps:
       - name: Create OpenClash & openclash directory for git & ipk
-        run: mkdir OpenClash openclash
+        run: mkdir -p OpenClash openclash-x86 openclash-a53
         
       - name: Checkout package branch to OpenClash directory
         uses: actions/checkout@v4
@@ -22,7 +22,9 @@ jobs:
           ref: package
           
       - name: Copy latest openclash IPK to openclash directory
-        run: cp OpenClash/master/*.ipk openclash/
+        run: |
+          cp OpenClash/master/*.ipk openclash-x86
+          cp OpenClash/master/*.ipk openclash-a53
 
       - name: Get version info
         id: extract_version
@@ -47,13 +49,16 @@ jobs:
 
       - name: Copy latest meta core to openclash directory
         run: |
-          tar -xzvf Meta/master/meta/clash-linux-amd64.tar.gz -C openclash/
-          mv openclash/clash openclash/clash_meta
-          ls openclash
+          tar -xzvf Meta/master/meta/clash-linux-amd64.tar.gz -C openclash-x86
+          tar -xzvf Meta/master/meta/clash-linux-arm64.tar.gz -C openclash-a53
+          mv openclash-x86/clash openclash-x86/clash_meta
+          mv openclash-a53/clash openclash-a53/clash_meta
+          ls openclash-x86
+          ls openclash-a53
 
       - name: Create install.sh script save to openclash directory
         run: |
-          cat << 'EOF' > openclash/install.sh
+          cat << 'EOF' > openclash-x86/install.sh
           opkg update
           if [ $? -ne 0 ]; then
               echo "update failed。"
@@ -70,7 +75,9 @@ jobs:
               exit 0
           fi
           EOF
-          chmod +x openclash/install.sh
+          chmod +x openclash-x86/install.sh
+          cp openclash-x86/install.sh openclash-a53/install.sh
+          chmod +x openclash-a53/install.sh
 
       - name: Clone makeself repository for self-extracting installer
         run: | 
@@ -79,9 +86,11 @@ jobs:
       
       - name: move openclash directory to makeself & create run
         run: |
-          mv openclash makeself/
+          mv openclash-x86 makeself/
+          mv openclash-a53 makeself/
           cd makeself
-          ./makeself.sh openclash/ openclash-amd64.run "by github action" ./install.sh
+          ./makeself.sh openclash-x86/ openclash-x86-64-${{ steps.extract_version.outputs.version }}.run "by github action" ./install.sh
+          ./makeself.sh openclash-a53/ openclash-aarch64_cortex-a53-${{ steps.extract_version.outputs.version }}.run "by github action" ./install.sh
 
       - name: Generate new tag & release
         uses: softprops/action-gh-release@master
