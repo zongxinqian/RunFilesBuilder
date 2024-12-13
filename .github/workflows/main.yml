@@ -1,3 +1,11 @@
+#=================================================
+# https://github.com/wukongdaily/RunFilesBuilder
+# Description: Build RunFiles using GitHub Actions
+# Lisence: MIT
+# Author: wukongdaily
+# Blog: wkdaily.cpolar.top
+#=================================================
+
 name: Make Passwall run files
 
 on:
