@@ -199,8 +199,8 @@ jobs:
             echo "APP_VERSION=$appversion" >> $GITHUB_ENV
             release_name=$(TZ="Asia/Shanghai" date +'%Y-%m-%d %H:%M Build')
             echo "RELEASE_NAME=$release_name" >> $GITHUB_ENV
-            ./makeself.sh x86_64/ ssrp_x86_64_${{ env.APP_VERSION }}.run "by github action" ./install.sh
-            ./makeself.sh a53/ ssrp_a53_${{ env.APP_VERSION }}.run "by github action" ./install.sh
+            ./makeself.sh x86_64/ ssrp_x86_64_$appversion.run "by github action" ./install.sh
+            ./makeself.sh a53/ ssrp_aarch64_cortex-a53_$appversion.run "by github action" ./install.sh
             
             
       
@@ -209,7 +209,7 @@ jobs:
         with:
           tag_name: ${{ env.APP_VERSION }}
           name: ${{ env.RELEASE_NAME }}
-          body: "![Github](https://img.shields.io/badge/SSRP.run-123456?logo=github&logoColor=fff&labelColor=blue&style=for-the-badge) [![Github](https://img.shields.io/badge/国内加速站下载-FC7C0D?logo=github&logoColor=fff&labelColor=000&style=for-the-badge)](https://wkdaily.cpolar.top/archives/1) ![GitHub Downloads (all assets, specific tag)](https://img.shields.io/github/downloads/wukongdaily/RunFilesBuilder/ssrp/total?style=for-the-badge&labelColor=black&color=%2325c2a0)"
+          body: "![Github](https://img.shields.io/badge/SSRP.run-123456?logo=github&logoColor=fff&labelColor=blue&style=for-the-badge) [![Github](https://img.shields.io/badge/国内加速站下载-FC7C0D?logo=github&logoColor=fff&labelColor=000&style=for-the-badge)](https://wkdaily.cpolar.top/archives/1) ![GitHub Downloads (all assets, specific tag)](https://img.shields.io/github/downloads/wukongdaily/RunFilesBuilder/${{ env.APP_VERSION }}/total?style=for-the-badge&labelColor=black&color=%2325c2a0)"
           files: makeself/*.run
           token: ${{ secrets.GITHUB_TOKEN }}
         env:
