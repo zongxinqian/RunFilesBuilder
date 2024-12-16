@@ -5,7 +5,7 @@
 # Author: wukongdaily
 # Blog: wkdaily.cpolar.top
 #=================================================
-name: pw2 test
+name: Make PassWall2 run files
 
 on:
   workflow_dispatch:
