@@ -8,8 +8,6 @@
 name: Make ShadowsocksPlus+ run files
 
 on:
-  schedule:
-    - cron: '0 */6 * * *'
   workflow_dispatch:
     inputs:
       package_version:
@@ -19,7 +17,6 @@ on:
 
 jobs:
   build:
-    if: ${{ github.repository == 'wukongdaily/RunFilesBuilder' || github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-22.04 
 
     steps:
