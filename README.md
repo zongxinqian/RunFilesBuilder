@@ -4,9 +4,8 @@
 >> 本质上是利用makeslef,将ipk和shell文件打包成自解压程序。
 > <img src="https://github.com/user-attachments/assets/3f5dabba-1efa-4e67-bf5b-86a27c114902" height=40>
 
-## 实现原理说明 
-[![YouTube](https://img.shields.io/badge/YouTube-123456?logo=youtube&labelColor=ff0000)](https://youtu.be/p76u8krTh08)
-
+## 实现原理和操作指南
+[![操作步骤](https://img.shields.io/badge/YouTube-123456?logo=youtube&labelColor=ff0000)](https://youtu.be/o0TN8LV01i4)
 
 ## 参考项目
 > 【打包】https://github.com/megastep/makeself
