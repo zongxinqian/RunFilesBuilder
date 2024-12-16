@@ -109,6 +109,7 @@ jobs:
         uses: softprops/action-gh-release@v2.1.0
         with:
           tag_name: ${{ env.version }}
+          name: "OpenClash-${{ env.version }}"
           files: makeself/*.run
           token: ${{ secrets.GITHUB_TOKEN }}
         env:
