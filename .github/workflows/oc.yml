@@ -9,6 +9,8 @@
 name: Make OpenClash run files 
 
 on:
+  schedule:
+     - cron: '0 */12 * * *'
   workflow_dispatch:
 
 jobs:
