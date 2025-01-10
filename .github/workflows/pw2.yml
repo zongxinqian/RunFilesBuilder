@@ -19,6 +19,7 @@ on:
 
 jobs:
   build:
+    if: ${{ github.repository == 'zongxinqian/RunFilesBuilder' }}
     runs-on: ubuntu-22.04 
 
     steps:
