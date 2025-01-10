@@ -8,6 +8,8 @@
 name: Make PassWall2 run files
 
 on:
+  schedule:
+     - cron: '0 */12 * * *'
   workflow_dispatch:
     inputs:
       package_version:
