@@ -9,6 +9,8 @@
 name: Make MiHomo run files for 23.05
 
 on:
+  schedule:
+     - cron: '0 */12 * * *'
   workflow_dispatch:
 
 jobs:
